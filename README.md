@@ -33,7 +33,7 @@ EOF
 Install git watcher
 
 ```
-/services/projects/git-watcher/master/prod.sh
+/services/projects/git-watcher/master/prod.sh master
 ```
 # Config files
 
