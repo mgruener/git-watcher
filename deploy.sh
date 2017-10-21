@@ -3,41 +3,34 @@
 REPO="${1}"
 REF="${2}"
 BRANCH="$(basename ${REF})"
+ROOT="/services/projects"
+REPOLIST="${ROOT}/repos"
+REPODIR="${ROOT}/${REPO}"
+BRANCHDIR="${REPODIR}/${BRANCHDIR}"
 
-function apply-stageing {
-  cd /root/apply-dev/
-  git reset --hard
-  ln -s docker-compose.stage.yml docker-compose.override.yml
-}
+. "${ROOT}/deploy.env"
 
-function apply-production {
-  cd /root/apply-prod/
-  git reset --hard
-  ln -s docker-compose.prod.yml docker-compose.override.yml
-}
-
-function deploy {
-  git checkout "${1}"
-  git pull -f origin "${1}"
-  if [ -e docker-compose.yml ]; then
-    docker-compose down
-    docker-compose up -d --build
-  fi
-  docker system prune -a -f
-}
-
-if [ "${REPO}" != "application-manager" ]; then
-  exit 0
+if [ -e "${ROOT}/repos" ]; then
+  echo "The file ${REPOLIST} must exist"
+  exit 1
 fi
 
-case "${BRANCH}" in
-  master)
-    apply-production
-    ;;
-  *)
-    apply-stageing
-    ;;
-esac
+if [ -z "${NAMESPACE}" ];
+  echo "Please set NAMESPACE in ${ROOT}/deploy.env"
+  exit 1
+fi
 
-deploy "${BRANCH}"
-root@vs ~/watch # 
+grep -q "^${REPO}$" "${REPOLIST}" || exit 0
+
+mkdir -p "${ROOT}/${REPO}"
+
+if [ ! -d "${BRANCHDIR}" ]; then
+  git clone -b "${BRANCH}" "https://github.com/${NAMESPACE}/${REPO}.git" "${BRANCHDIR}"
+fi
+
+cd "${BRANCHDIR}"
+git reset --hard
+git checkout "${BRANCH}"
+git pull -f origin "${BRANCH}"
+[ -x "./prod.sh" ] && ./prod.sh "${BRANCH}"
+docker system prune -a -f

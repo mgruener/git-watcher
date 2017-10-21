@@ -4,9 +4,11 @@ Description=Github Webhook watcher
 [Service]
 User=root
 Group=root
-EnvironmentFile=/root/git-watcher/watcher.env
+Environment=PORT=1234
+Environment=SECRET=secret
+EnvironmentFile=-/services/projects/watcher.env
 Restart=on-failure
-ExecStart=/usr/bin/githubhook --secret ${SECRET} --port ${PORT} push /root/git-watcher/deploy.sh
+ExecStart=/usr/bin/githubhook --secret ${SECRET} --port ${PORT} push /services/projects/git-watcher/master/deploy.sh
 
 [Install]
 WantedBy=multi-user.target
