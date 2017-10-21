@@ -6,16 +6,16 @@ BRANCH="$(basename ${REF})"
 ROOT="/services/projects"
 REPOLIST="${ROOT}/repos"
 REPODIR="${ROOT}/${REPO}"
-BRANCHDIR="${REPODIR}/${BRANCHDIR}"
+BRANCHDIR="${REPODIR}/${BRANCH}"
 
 . "${ROOT}/deploy.env"
 
-if [ -e "${ROOT}/repos" ]; then
+if [ ! -e "${ROOT}/repos" ]; then
   echo "The file ${REPOLIST} must exist"
   exit 1
 fi
 
-if [ -z "${NAMESPACE}" ];
+if [ -z "${NAMESPACE}" ]; then
   echo "Please set NAMESPACE in ${ROOT}/deploy.env"
   exit 1
 fi
