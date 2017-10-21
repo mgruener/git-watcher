@@ -1,0 +1,12 @@
+[Unit]
+Description=Github Webhook watcher
+
+[Service]
+User=root
+Group=root
+EnvironmentFile=/root/git-watcher/watcher.env
+Restart=on-failure
+ExecStart=/usr/bin/githubhook --secret ${SECRET} --port ${PORT} push /root/git-watcher/deploy.sh
+
+[Install]
+WantedBy=multi-user.target
