@@ -13,7 +13,7 @@ apt-get install -y nodejs
 npm install -g githubhook
 ```
 
-Install git-watcher
+Configure git-watcher
 
 ```
 mkdir -p /services/projects/git-watcher
@@ -28,9 +28,13 @@ cat << EOF > /services/projects/watcher.env
 SECRET=mysecret
 PORT=1234
 EOF
-echo "git-watcher" > /services/projects/repos
 ```
 
+Install git watcher
+
+```
+/services/projects/git-watcher/master/prod.sh
+```
 # Config files
 
 * `repos`: list of repositories git-watcher should react to
